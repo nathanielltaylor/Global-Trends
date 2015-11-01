@@ -1,6 +1,7 @@
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load();
+
   });
 
   Template.body.helpers({
@@ -26,11 +27,35 @@ if (Meteor.isClient) {
       });
     });
   });
+
+  function getTrends() {
+
+  };
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
 
+    var Twit = Meteor.npmRequire('twit');
+
+   var T = new Twit({
+       consumer_key:         consumerKey, // API key
+       consumer_secret:      consumerSecret, // API secret
+       access_token:         accessToken,
+       access_token_secret:  accessSecret
+   });
+
+   //  search twitter for all tweets containing the word 'banana'
+   //  since Nov. 11, 2011
+   T.get('search/tweets',
+       {
+           q: 'banana since:2011-11-11',
+           count: 100
+       },
+       function(err, data, response) {
+           console.log(data);
+       }
+   );
   });
 }
