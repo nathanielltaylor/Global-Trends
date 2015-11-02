@@ -1,3 +1,5 @@
+Trends = new Mongo.Collection("trends");
+
 if (Meteor.isClient) {
   Meteor.startup(function() {
     GoogleMaps.load();
@@ -36,26 +38,28 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
-
     var Twit = Meteor.npmRequire('twit');
 
-   var T = new Twit({
-       consumer_key:         consumerKey, // API key
-       consumer_secret:      consumerSecret, // API secret
-       access_token:         accessToken,
-       access_token_secret:  accessSecret
-   });
+    var T = new Twit({
+      consumer_key:         consumerKey, // API key
+      consumer_secret:      consumerSecret, // API secret
+      access_token:         accessToken,
+      access_token_secret:  accessSecret
+    });
 
-   //  search twitter for all tweets containing the word 'banana'
-   //  since Nov. 11, 2011
-   T.get('search/tweets',
-       {
-           q: 'banana since:2011-11-11',
-           count: 100
-       },
-       function(err, data, response) {
-           console.log(data);
-       }
-   );
-  });
-}
+    if (Trends.find().count == 0) {
+      var trends = T.get('trends/available',
+      function(err, data, response) {
+        return data
+      });
+
+      for (i = 0; i < trends.length; i++) {
+        Trends.insert({
+          trendObject: trends[i]
+        });
+      }}
+
+      var trends = Trends.find();
+    });
+
+  }
