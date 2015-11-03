@@ -50,21 +50,33 @@ if (Meteor.isServer) {
     // var trends = "hello";
 
     // if (Trends.find().count == 0) {
+      var all_trends = {};
+
       T.get('trends/available',
       function(err, data, response) {
-        var trends = data;
+        var locations = data;
+
         for (i = 0; i < 5; i++) {
-          console.log(trends[i]["woeid"]);
+          var trends_per_place = [];
+          var woeid = locations[i]["woeid"];
+          console.log(woeid);
           T.get('trends/place',
           {
-            woeid: trends[i]["woeid"],
+            id: locations[i]["woeid"],
           },
           function(err, data, response){
-            console.log(data);
+            var trend_name = data[0]["trends"][0]["name"];
+            console.log(trend_name);
+            trends_per_place.push(trend_name)
+            console.log(trends_per_place)
           }
         );
+        all_trends[woeid.toString()] = trends_per_place;
         }
+        // return all_trends;
       });
+
+      console.log(all_trends);
 
 
       // for (i = 0; i < trends.length; i++) {
