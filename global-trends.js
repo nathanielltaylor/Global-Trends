@@ -47,19 +47,37 @@ if (Meteor.isServer) {
       access_token_secret:  accessSecret
     });
 
-    if (Trends.find().count == 0) {
-      var trends = T.get('trends/available',
+    // var trends = "hello";
+
+    // if (Trends.find().count == 0) {
+      T.get('trends/available',
       function(err, data, response) {
-        return data
+        var trends = data;
+        for (i = 0; i < 5; i++) {
+          console.log(trends[i]["woeid"]);
+          T.get('trends/place',
+          {
+            woeid: trends[i]["woeid"],
+          },
+          function(err, data, response){
+            console.log(data);
+          }
+        );
+        }
       });
 
-      for (i = 0; i < trends.length; i++) {
-        Trends.insert({
-          trendObject: trends[i]
-        });
-      }}
 
-      var trends = Trends.find();
+      // for (i = 0; i < trends.length; i++) {
+      //   Trends.insert({
+      //     trendObject: trends[i]
+      //   });
+      // }
+    // }
+    // console.log(trends)
+      //
+      // var trends = Trends.find();
+      // console.log(trends)
+
     });
 
   }
