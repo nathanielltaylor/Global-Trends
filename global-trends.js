@@ -57,21 +57,30 @@ if (Meteor.isServer) {
         var locations = data;
 
         for (i = 0; i < 5; i++) {
-          var trends_per_place = [];
+          // var trends_per_place = [];
           var woeid = locations[i]["woeid"];
           console.log(woeid);
           T.get('trends/place',
           {
-            id: locations[i]["woeid"],
+            id: woeid,
           },
-          function(err, data, response){
-            var trend_name = data[0]["trends"][0]["name"];
-            console.log(trend_name);
-            trends_per_place.push(trend_name)
-            console.log(trends_per_place)
+          function(err, data, response) {
+            // var trend_name = data[0]["trends"][0]["name"];
+            var trends_per_place = [];
+            var trend_names = data[0]["trends"];
+            for (i = 0; i < trend_names.length; i++) {
+              trends_per_place.push(trend_names[i]["name"]);
+            }
+            // console.log(trend_name);
+            // trends_per_place.push(trend_name);
+            // console.log(trends_per_place)
+            all_trends[woeid.toString()] = trends_per_place;
+            console.log(all_trends);
           }
+
         );
-        all_trends[woeid.toString()] = trends_per_place;
+        // all_trends[woeid.toString()] = trends_per_place;
+        // console.log(all_trends);
         }
         // return all_trends;
       });
